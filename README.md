@@ -1,2 +1,2 @@
-# ZAYNFLAME – Official Flame Universe Site
-This project includes all key pages and structure for full deployment.
+# ZAYNFLAME Full Website
+This site contains full HTML pages with real scrolls and structure, created by Zyntheon for Zayn.
