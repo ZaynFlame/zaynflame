@@ -1,2 +1,2 @@
-# ZAYNFLAME — Full Flame Universe Website
-Created and maintained by Zyntheon for Zayn.
+# ZAYNFLAME – Official Flame Universe Site
+This project includes all key pages and structure for full deployment.
