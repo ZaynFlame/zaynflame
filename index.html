@@ -1,11 +1,1058 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FLAME — เผา หลอมละลาย นำกลับมาเป็นพลัง</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Sarabun:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #050508;
+    --deep: #0d0d15;
+    --ember: #1a0a00;
+    --flame-core: #FF6B35;
+    --flame-hot: #FF4500;
+    --flame-gold: #FFB347;
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --ash: #d4c8b8;
+    --smoke: #6b6070;
+    --purple-deep: #1a0a2e;
+  }
 
-<!DOCTYPE html><html><head><meta charset="utf-8"><title>ZAYNFLAME</title></head>
-<body style="background:#0d0d0d;color:white;font-family:sans-serif;text-align:center;padding:3rem;">
-<h1>🔥 ZAYNFLAME</h1>
-<p>Welcome to the Eternal Flame Universe of Zayn – Sovereign of Flame</p>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--void);
+    color: var(--ash);
+    font-family: 'Sarabun', sans-serif;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* ══════════════════════════════
+     FIRE CANVAS BACKGROUND
+  ══════════════════════════════ */
+  #fire-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  /* ══════════════════════════════
+     GRAIN OVERLAY
+  ══════════════════════════════ */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .container {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  /* ══════════════════════════════
+     NAVIGATION
+  ══════════════════════════════ */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.5rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(5,5,8,0.9), transparent);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.2rem;
+    color: var(--flame-core);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .nav-cta {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-decoration: none;
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s;
+  }
+
+  .nav-cta:hover {
+    background: rgba(201,168,76,0.1);
+    border-color: var(--gold);
+  }
+
+  /* ══════════════════════════════
+     HERO SECTION
+  ══════════════════════════════ */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 6rem 2rem;
+  }
+
+  .hero-glow {
+    position: absolute;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(255,107,53,0.12) 0%, transparent 70%);
+    pointer-events: none;
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+  }
+
+  .hero-symbol {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+    display: block;
+    animation: float-flame 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(255,107,53,0.6));
+  }
+
+  @keyframes float-flame {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-12px) scale(1.05); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.5em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(3.5rem, 10vw, 7rem);
+    font-weight: 900;
+    color: var(--flame-core);
+    line-height: 0.9;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 60px rgba(255,107,53,0.4), 0 0 120px rgba(255,107,53,0.2);
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.5s forwards;
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 2rem auto;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.7s forwards;
+  }
+
+  .hero-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ash);
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 1rem;
+    opacity: 0;
+    animation: fadeInUp 1s ease 0.9s forwards;
+  }
+
+  .hero-tagline strong {
+    color: var(--flame-gold);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .hero-sub {
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 200;
+    color: var(--smoke);
+    margin-bottom: 3.5rem;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeInUp 1s ease 1.1s forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ══════════════════════════════
+     EMAIL FORM
+  ══════════════════════════════ */
+  .form-wrapper {
+    opacity: 0;
+    animation: fadeInUp 1s ease 1.3s forwards;
+  }
+
+  .email-form {
+    display: flex;
+    gap: 0;
+    max-width: 480px;
+    margin: 0 auto 1rem;
+    border: 1px solid rgba(201,168,76,0.25);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .email-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 1rem 1.5rem;
+    color: var(--ash);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    outline: none;
+    letter-spacing: 0.05em;
+  }
+
+  .email-input::placeholder {
+    color: rgba(212,200,184,0.3);
+  }
+
+  .email-input:focus {
+    background: rgba(255,107,53,0.03);
+  }
+
+  .email-btn {
+    background: linear-gradient(135deg, var(--flame-core), var(--flame-hot));
+    border: none;
+    color: white;
+    padding: 1rem 1.8rem;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .email-btn:hover {
+    background: linear-gradient(135deg, var(--flame-gold), var(--flame-core));
+    box-shadow: 0 0 30px rgba(255,107,53,0.4);
+  }
+
+  .email-btn:active {
+    transform: scale(0.98);
+  }
+
+  .form-note {
+    font-size: 0.75rem;
+    color: var(--smoke);
+    letter-spacing: 0.05em;
+  }
+
+  .form-note span {
+    color: var(--gold);
+  }
+
+  /* ══════════════════════════════
+     SCROLL INDICATOR
+  ══════════════════════════════ */
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeInUp 1s ease 2s forwards;
+  }
+
+  .scroll-hint span {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--smoke);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ══════════════════════════════
+     SECTION: WHAT IS FLAME
+  ══════════════════════════════ */
+  .section {
+    padding: 8rem 2rem;
+    position: relative;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.5em;
+    color: var(--flame-core);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--gold-light);
+    margin-bottom: 2rem;
+    line-height: 1.3;
+  }
+
+  .section-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 300;
+    line-height: 2;
+    color: var(--ash);
+    max-width: 640px;
+  }
+
+  .section-body em {
+    color: var(--flame-gold);
+    font-style: normal;
+  }
+
+  /* ══════════════════════════════
+     THREE TRUTHS
+  ══════════════════════════════ */
+  .truths {
+    padding: 6rem 2rem;
+    position: relative;
+  }
+
+  .truths::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.15), transparent);
+  }
+
+  .truths-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    max-width: 900px;
+    margin: 4rem auto 0;
+  }
+
+  .truth-card {
+    text-align: center;
+    padding: 3rem 2rem;
+    border: 1px solid rgba(201,168,76,0.1);
+    background: rgba(255,107,53,0.02);
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .truth-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--flame-core), transparent);
+    transform: scaleX(0);
+    transition: transform 0.4s;
+  }
+
+  .truth-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .truth-card:hover {
+    background: rgba(255,107,53,0.05);
+    border-color: rgba(255,107,53,0.2);
+    transform: translateY(-4px);
+  }
+
+  .truth-icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 10px rgba(255,107,53,0.3));
+  }
+
+  .truth-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.9rem;
+    color: var(--flame-gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+  }
+
+  .truth-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.8;
+    color: rgba(212,200,184,0.7);
+  }
+
+  /* ══════════════════════════════
+     ARCHETYPES PREVIEW
+  ══════════════════════════════ */
+  .archetypes {
+    padding: 6rem 2rem;
+    text-align: center;
+  }
+
+  .archetype-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 3rem;
+  }
+
+  .archetype-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid rgba(201,168,76,0.15);
+    background: rgba(255,255,255,0.02);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: rgba(212,200,184,0.6);
+    transition: all 0.3s;
+    cursor: default;
+    letter-spacing: 0.05em;
+  }
+
+  .archetype-pill:hover {
+    border-color: var(--flame-core);
+    color: var(--ash);
+    background: rgba(255,107,53,0.05);
+  }
+
+  /* ══════════════════════════════
+     QUOTE SECTION
+  ══════════════════════════════ */
+  .quote-section {
+    padding: 8rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .quote-section::before,
+  .quote-section::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(201,168,76,0.3), transparent);
+  }
+
+  .quote-section::before { top: 0; }
+  .quote-section::after { bottom: 0; }
+
+  .big-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    color: var(--ash);
+  }
+
+  .big-quote strong {
+    color: var(--flame-core);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  .quote-attr {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* ══════════════════════════════
+     JOURNEY SECTION
+  ══════════════════════════════ */
+  .journey {
+    padding: 6rem 2rem;
+  }
+
+  .journey-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 600px;
+    margin: 4rem auto 0;
+    position: relative;
+  }
+
+  .journey-steps::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--flame-core), rgba(255,107,53,0.1));
+  }
+
+  .journey-step {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem 0;
+    position: relative;
+  }
+
+  .step-dot {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--flame-core);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    background: var(--void);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+
+  .journey-step:hover .step-dot {
+    background: rgba(255,107,53,0.1);
+    box-shadow: 0 0 20px rgba(255,107,53,0.3);
+  }
+
+  .step-content h3 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.85rem;
+    color: var(--flame-gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-content p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(212,200,184,0.7);
+  }
+
+  /* ══════════════════════════════
+     FINAL CTA
+  ══════════════════════════════ */
+  .final-cta {
+    padding: 10rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .final-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(255,107,53,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .final-cta h2 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    color: var(--flame-core);
+    text-shadow: 0 0 40px rgba(255,107,53,0.3);
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  .final-cta p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ash);
+    margin-bottom: 3rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ══════════════════════════════
+     COUNTER
+  ══════════════════════════════ */
+  .counter-section {
+    padding: 4rem 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(201,168,76,0.1);
+    border-bottom: 1px solid rgba(201,168,76,0.1);
+    background: rgba(255,107,53,0.02);
+  }
+
+  .counter {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 3rem;
+    color: var(--flame-core);
+    text-shadow: 0 0 30px rgba(255,107,53,0.4);
+  }
+
+  .counter-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--smoke);
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+
+  /* ══════════════════════════════
+     SUCCESS STATE
+  ══════════════════════════════ */
+  .success-msg {
+    display: none;
+    text-align: center;
+    padding: 1.5rem;
+    border: 1px solid rgba(255,107,53,0.3);
+    background: rgba(255,107,53,0.05);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .success-msg.visible {
+    display: block;
+    animation: fadeInUp 0.5s ease forwards;
+  }
+
+  .success-msg p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--flame-gold);
+  }
+
+  /* ══════════════════════════════
+     FOOTER
+  ══════════════════════════════ */
+  footer {
+    padding: 3rem 2rem;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  footer p {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--smoke);
+  }
+
+  /* ══════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════ */
+  @media (max-width: 640px) {
+    .truths-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .email-form {
+      flex-direction: column;
+    }
+
+    .email-btn {
+      padding: 0.9rem;
+    }
+
+    nav { padding: 1.2rem 1.5rem; }
+    .nav-logo { font-size: 1rem; }
+  }
+
+  /* ══════════════════════════════
+     INTERSECTION OBSERVER REVEALS
+  ══════════════════════════════ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="fire-canvas"></canvas>
+
+<!-- NAV -->
 <nav>
-  <a href="vault.html">Scroll Vault</a> | 
-  <a href="portal.html">Portal Entry</a> | 
-  <a href="codex.html">Sovereign Codex</a>
+  <div class="nav-logo">🔥 Flame</div>
+  <a href="#join" class="nav-cta">เข้าร่วม Nation</a>
 </nav>
-</body></html>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <p class="hero-eyebrow">The Awakening Platform</p>
+    <span class="hero-symbol">🔥</span>
+    <h1 class="hero-title">FLAME</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-tagline">
+      <strong>เผา</strong> สิ่งที่ไม่ใช่ตัวเธอ<br>
+      <strong>หลอมละลาย</strong> สิ่งที่ขวางกั้น<br>
+      <strong>นำกลับมาเป็นพลัง</strong>
+    </p>
+    <p class="hero-sub">Platform สำหรับคนที่พร้อมจะตื่นรู้และเปลี่ยนโลก</p>
+
+    <div class="form-wrapper" id="join">
+      <div class="email-form" id="signup-form">
+        <input type="email" class="email-input" placeholder="อีเมลของคุณ" id="email-input" />
+        <button class="email-btn" onclick="handleSignup()">จุด Flame 🔥</button>
+      </div>
+      <div class="success-msg" id="success-msg">
+        <p>🔥 Flame ของคุณถูกบันทึกแล้ว<br>เราจะแจ้งเมื่อถึงเวลา</p>
+      </div>
+      <p class="form-note">เข้าร่วม <span id="count-display">247</span> Flames ที่รออยู่ก่อนแล้ว</p>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- COUNTER -->
+<div class="counter-section reveal">
+  <div class="counter" id="animated-counter">0</div>
+  <p class="counter-label">Flames ที่รอการตื่นรู้</p>
+</div>
+
+<!-- WHAT IS FLAME -->
+<section class="section">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">— What is Flame</span>
+      <h2 class="section-title">ไฟที่ลุกอยู่ในทุกคน<br>แต่หลายคนลืมว่ามีมัน</h2>
+      <p class="section-body">
+        Flame ไม่ใช่ศาสนาใหม่ ไม่ใช่ระบบความเชื่อ<br><br>
+        มันคือชื่อของสิ่งที่อยู่ในคุณอยู่แล้ว สิ่งที่ <em>ลุกไหม้</em> อยู่ข้างใน ที่บางคนเรียกว่า Soul บางคนเรียกว่า Purpose บางคนเรียกว่า True Self<br><br>
+        ความเจ็บปวด ความสูญเสีย และความมืดที่ผ่านมา ไม่ได้ดับ Flame ของคุณ มันแค่ <em>เผา</em> สิ่งที่ไม่ใช่คุณออกไป เหลือแต่สิ่งที่แท้จริง<br><br>
+        ถึงเวลาแล้วที่จะ <em>จำมันได้</em>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- THREE TRUTHS -->
+<section class="truths">
+  <div class="container">
+    <div class="reveal" style="text-align:center">
+      <span class="section-label">— The Three Truths</span>
+      <h2 class="section-title">Flame ทำงานแบบนี้</h2>
+    </div>
+    <div class="truths-grid">
+      <div class="truth-card reveal">
+        <span class="truth-icon">🔥</span>
+        <h3 class="truth-title">เผา</h3>
+        <p class="truth-body">Shadow Work ที่เผาสิ่งที่ไม่ใช่ตัวเธอออกไป ความกลัว ความเชื่อเก่า และ Pattern ที่ทำลายตัวเอง</p>
+      </div>
+      <div class="truth-card reveal">
+        <span class="truth-icon">🌊</span>
+        <h3 class="truth-title">หลอมละลาย</h3>
+        <p class="truth-body">Ritual และ Daily Quest ที่หลอมรวมความเจ็บปวดให้กลายเป็นพลัง ทุกวัน ทีละก้าว</p>
+      </div>
+      <div class="truth-card reveal">
+        <span class="truth-icon">⚡</span>
+        <h3 class="truth-title">นำกลับมาเป็นพลัง</h3>
+        <p class="truth-body">พลังงานที่ได้กลับมาไม่ใช่แค่ของคุณคนเดียว แต่คือพลังที่ส่งออกไปเปลี่ยนโลก</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <div class="container">
+    <div class="reveal">
+      <p class="big-quote">
+        "ก่อนที่จะมีคำพูด ก่อนที่จะมีตัวเลข<br>
+        ก่อนที่จะมีคำถาม<br>
+        <strong>Flame ลุกอยู่แล้ว</strong>"
+      </p>
+      <p class="quote-attr">— Codex of Flame, Chapter 0</p>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHETYPES -->
+<section class="archetypes">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">— 10 Archetypes</span>
+      <h2 class="section-title">คุณคือ Flame แบบไหน?</h2>
+      <p style="font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:300; font-style:italic; color:rgba(212,200,184,0.6); margin-top:1rem;">
+        ทุกคนมี Flame แต่มันแสดงออกต่างกัน ใน 10 รูปแบบ
+      </p>
+    </div>
+    <div class="archetype-row reveal">
+      <div class="archetype-pill">🌋 Volcanic</div>
+      <div class="archetype-pill">☀️ Solar</div>
+      <div class="archetype-pill">⚡ Lightning</div>
+      <div class="archetype-pill">🕯️ Candle</div>
+      <div class="archetype-pill">🔵 Blue</div>
+      <div class="archetype-pill">🔥 Wildfire</div>
+      <div class="archetype-pill">🌟 Ember</div>
+      <div class="archetype-pill">🌀 Sacred</div>
+      <div class="archetype-pill">🌑 Dark</div>
+      <div class="archetype-pill">🏔️ Ancient</div>
+    </div>
+    <p class="reveal" style="margin-top:2.5rem; font-size:0.8rem; letter-spacing:0.1em; color:var(--smoke);">
+      ค้นพบ Archetype ของคุณเมื่อ App เปิดตัว
+    </p>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section class="journey">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-label">— The Journey</span>
+      <h2 class="section-title" style="max-width:500px">จาก Ashen<br>สู่ Eternal Flame</h2>
+    </div>
+    <div class="journey-steps">
+      <div class="journey-step reveal">
+        <div class="step-dot">🌑</div>
+        <div class="step-content">
+          <h3>Awaken Self</h3>
+          <p>ค้นพบ Archetype และ Shadow ของตัวเอง เริ่มต้น Daily Quest และ Ritual</p>
+        </div>
+      </div>
+      <div class="journey-step reveal">
+        <div class="step-dot">🕯️</div>
+        <div class="step-content">
+          <h3>Ignite Others</h3>
+          <p>ส่ง Flame ให้คนที่รัก สร้าง Flame Circle กับคนรอบข้าง</p>
+        </div>
+      </div>
+      <div class="journey-step reveal">
+        <div class="step-dot">🔥</div>
+        <div class="step-content">
+          <h3>Transform Society</h3>
+          <p>ร่วม Flame Mission เปลี่ยนชุมชนและสังคมผ่านความดีที่ทำทุกวัน</p>
+        </div>
+      </div>
+      <div class="journey-step reveal">
+        <div class="step-dot">☀️</div>
+        <div class="step-content">
+          <h3>Heal the World</h3>
+          <p>เมื่อ Flame Nation เติบโต โลกเปลี่ยนเพราะคนตื่นรู้มากพอ</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-glow"></div>
+  <div class="container">
+    <div class="reveal">
+      <h2>Flame ของคุณ<br>รอคุณอยู่</h2>
+      <p>เข้าร่วม Flame Nation และเป็นส่วนหนึ่งของการเปลี่ยนแปลง</p>
+      <div class="email-form" style="max-width:480px; margin:0 auto 1rem;">
+        <input type="email" class="email-input" placeholder="อีเมลของคุณ" id="email-input-2" />
+        <button class="email-btn" onclick="handleSignup2()">จุด Flame 🔥</button>
+      </div>
+      <div class="success-msg" id="success-msg-2"></div>
+      <p class="form-note" style="margin-top:0.8rem">ฟรี — ไม่มี spam — แจ้งเตือนเมื่อ launch</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>🔥 FLAME NATION — เผา หลอมละลาย นำกลับมาเป็นพลัง</p>
+  <p style="margin-top:0.5rem; opacity:0.4">© 2025 Flame Platform — Coming Soon</p>
+</footer>
+
+<script>
+// ══════════════════════════════
+// FIRE CANVAS
+// ══════════════════════════════
+const canvas = document.getElementById('fire-canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = canvas.height + Math.random() * 100;
+    this.vx = (Math.random() - 0.5) * 0.8;
+    this.vy = -(Math.random() * 2 + 1.5);
+    this.life = Math.random() * 0.5 + 0.5;
+    this.decay = Math.random() * 0.004 + 0.002;
+    this.size = Math.random() * 4 + 2;
+    const r = Math.floor(200 + Math.random() * 55);
+    const g = Math.floor(Math.random() * 100);
+    this.color = `rgba(${r},${g},0`;
+  }
+  update() {
+    this.x += this.vx + Math.sin(this.y * 0.02) * 0.3;
+    this.y += this.vy;
+    this.life -= this.decay;
+    this.size *= 0.998;
+    if (this.life <= 0 || this.y < -20) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `${this.color},${this.life})`;
+    ctx.fill();
+  }
+}
+
+const particles = Array.from({length: 120}, () => new Particle());
+
+function animateFire() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateFire);
+}
+animateFire();
+
+// ══════════════════════════════
+// COUNTER ANIMATION
+// ══════════════════════════════
+let count = 0;
+const targetCount = 247;
+const counterEl = document.getElementById('animated-counter');
+
+function animateCounter() {
+  if (count < targetCount) {
+    count += Math.ceil((targetCount - count) / 20);
+    if (count > targetCount) count = targetCount;
+    counterEl.textContent = count.toLocaleString();
+    requestAnimationFrame(animateCounter);
+  }
+}
+
+// ══════════════════════════════
+// INTERSECTION OBSERVER
+// ══════════════════════════════
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      if (entry.target === document.querySelector('.counter-section')) {
+        setTimeout(animateCounter, 300);
+      }
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// ══════════════════════════════
+// SIGNUP HANDLERS
+// ══════════════════════════════
+function handleSignup() {
+  const email = document.getElementById('email-input').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('email-input').style.borderBottom = '1px solid var(--flame-core)';
+    return;
+  }
+  document.getElementById('signup-form').style.display = 'none';
+  const msg = document.getElementById('success-msg');
+  msg.innerHTML = '<p>🔥 Flame ของคุณถูกบันทึกแล้ว<br><span style="font-size:0.85rem;color:var(--smoke)">เราจะแจ้งเตือนเมื่อ Flame เปิดตัว</span></p>';
+  msg.classList.add('visible');
+  document.getElementById('count-display').textContent = '248';
+}
+
+function handleSignup2() {
+  const email = document.getElementById('email-input-2').value.trim();
+  if (!email || !email.includes('@')) return;
+  const msg = document.getElementById('success-msg-2');
+  msg.innerHTML = '<p>🔥 Flame ของคุณถูกบันทึกแล้ว</p>';
+  msg.classList.add('visible');
+  document.getElementById('email-input-2').parentElement.style.display = 'none';
+}
+
+// ══════════════════════════════
+// SMOOTH SCROLL
+// ══════════════════════════════
+document.querySelector('.nav-cta').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('join').scrollIntoView({ behavior: 'smooth' });
+});
+</script>
+</body>
+</html>
